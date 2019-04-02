@@ -28,6 +28,22 @@ class GameViewController: UIViewController {
     //Player Label
     @IBOutlet weak var playerNumber: UILabel!
     
+    //Players score UI labels and properties
+    @IBOutlet weak var playerOneScoreLabel: UILabel!
+    @IBOutlet weak var playerTwoScoreLabel: UILabel!
+    
+    var playerOneScore = 0 {
+        didSet {
+            playerOneScoreLabel.text = "Player One Score: \(playerOneScore)"
+        }
+    }
+    
+    var playerTwoScore = 0 {
+        didSet {
+            playerTwoScoreLabel.text = "Player Two Score: \(playerTwoScore)"
+        }
+    }
+    
     //Connect the GameViewController to the GameScene
     var currentGame: GameScene!
 
@@ -124,6 +140,5 @@ class GameViewController: UIViewController {
         
         launchButton.isHidden = false
     }
-    
-    
+
 }

@@ -227,7 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         changePlayer()
     }
     
-    //Destroy Player when banana hits player
+    //Destroy Player when banana hits player, and update player score
     func destroy(player: SKSpriteNode) {
         let explosion = SKEmitterNode(fileNamed: "hitPlayer")!
         explosion.position = player.position
@@ -235,6 +235,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         player.removeFromParent()
         banana?.removeFromParent()
+        
+        //Update player score
+        //Player One
+        if currentPlayer == 1 {
+            viewController.playerOneScore += 1
+        
+        //Player Two
+        } else {
+            viewController.playerTwoScore += 1
+        }
         
         //Start new Game
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
