@@ -225,6 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //Change Player
         changePlayer()
+        
     }
     
     //Destroy Player when banana hits player, and update player score
@@ -246,6 +247,80 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             viewController.playerTwoScore += 1
         }
         
+        //End game whenn a player scores 3 points
+        if viewController.playerOneScore == 3 || viewController.playerTwoScore == 3 {
+            
+            //Show won game alert
+            var alertMessage: String
+            var alertTitle: String
+            
+            //Player One wins the game
+            if currentPlayer == 1 {
+                alertTitle = "Player One is the Winner!!"
+                alertMessage = "You're a loser Player Two"
+            
+            //If Player two wins the game
+            } else {
+                alertTitle = "Player Two is the Winner!!"
+                alertMessage = "You're a loser Player One"
+            }
+            
+            //Create alert
+            let ac = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+            
+            ac.addAction(UIAlertAction(title: "Play again?", style: .default, handler: {
+                action in self.self.startNewGame()
+            }))
+            
+            //Present  dipslay alert
+            self.view?.window?.rootViewController?.present(ac, animated: true)
+
+            
+        //Continue Game if no player has scored 3 points
+        } else {
+            
+            //Change players and reset scene
+            self.changePlayer()
+            
+            //Start new game round
+            self.startNewRound()
+        }
+        
+    } //End destroy(player: ) method
+    
+    //Start new round when player is hit by banana
+    func startNewRound() {
+        //Start new Game
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            [unowned self] in
+            let newRound = GameScene(size: self.size)
+            
+            //Update currentGame property to newGame
+            newRound.viewController = self.viewController
+            self.viewController.currentGame = newRound
+            
+            self.changePlayer()
+            newRound.currentPlayer = self.currentPlayer
+            
+            let transition = SKTransition.doorway(withDuration: 1.5)
+            self.view?.presentScene(newRound, transition: transition)
+        }
+    }
+    
+    //Switch players
+    func changePlayer() {
+        if currentPlayer == 1 {
+            currentPlayer = 2
+            
+        } else {
+            currentPlayer = 1
+        }
+        
+        viewController.activatePlayer(number: currentPlayer)
+    }
+    
+    //End Game method to reset game after a player scores 3 points
+    @objc func startNewGame() {
         //Start new Game
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             [unowned self] in
@@ -258,22 +333,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.changePlayer()
             newGame.currentPlayer = self.currentPlayer
             
-            let transition = SKTransition.doorway(withDuration: 1.5)
+            //Reset player points back to 0
+            self.viewController.playerOneScore = 0
+            self.viewController.playerTwoScore = 0
+            
+            let transition = SKTransition.doorway(withDuration: 0.5)
             self.view?.presentScene(newGame, transition: transition)
         }
-        
-    } //End destroy(player: ) method
-    
-    //Switch players
-    func changePlayer() {
-        if currentPlayer == 1 {
-            currentPlayer = 2
-            
-        } else {
-            currentPlayer = 1
-        }
-        
-        viewController.activatePlayer(number: currentPlayer)
     }
     
 }
